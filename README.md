@@ -1,0 +1,2 @@
+# pg-so
+Systemy operacyjne
