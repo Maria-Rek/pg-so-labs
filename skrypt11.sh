@@ -7,4 +7,4 @@ echo -e "\nWyniki z WWW:"
 cat cdlinux.www.log | cut -d " " -f 1,7,9 | grep '200$' | sort | uniq | cut -d " " -f 2 | grep -o "cdlinux-.*\.iso" | sed "s#?.*##" | sort | uniq -c | sort -rn
 
 echo -e "\nWyniki sumaryczne:"
-cat cdlinux.ftp.log cdlinux.www.log | grep -E 'OK| 200$' | awk '{print $2}' | grep -o "cdlinux-.*\.iso" | sed "s#?.*##" | sort | uniq -c | sort -rn
+cat cdlinux.ftp.log cdlinux.www.log | grep "OK\| 200$" | cut -d '"' -f 2,4 | awk '{print $NF}' | grep -o "cdlinux-.*\.iso" | sed "s#?.*##" | sort | uniq -c | sort -rn
