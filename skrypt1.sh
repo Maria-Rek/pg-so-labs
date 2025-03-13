@@ -5,8 +5,7 @@ www_log="cdlinux.www.log"
 
 count_downloads() {
     local log_file=$1
-    awk '{print $1, $0}' "$log_file" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ .*cdlinux-[^ ]+\.iso' | \
-    awk '{print $2, $1}' | sort | uniq | awk '{print $1}' | sort | uniq -c
+    awk '{print $1, $0}' "$log_file" | grep -oE 'cdlinux-[^ ]+\.iso$' | sort | uniq -c | sort -nr
 }
 
 echo "Wyniki z FTP:"
