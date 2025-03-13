@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ftp_log="calinux_ftp_log"
-www_log="calinux_www_log"
+ftp_log="cdlinux.ftp.log"
+www_log="cdlinux.www.log"
 
 count_downloads() {
     local log_file=$1
@@ -16,6 +16,4 @@ echo -e "\nWyniki z WWW:"
 count_downloads "$www_log"
 
 echo -e "\nWyniki sumaryczne:"
-cat "$ftp_log" "$www_log" | \
-awk '{print $1, $0}' | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ .*cdlinux-[^ ]+\.iso' | \
-awk '{print $2, $1}' | sort | uniq | awk '{print $1}' | sort | uniq -c
+count_downloads <(cat "$ftp_log" "$www_log")
