@@ -7,7 +7,6 @@ content=""
 
 while true; do
     clear
-    echo "Interaktywny skrypt wyszukiwania plików"
     echo "1. Nazwa pliku: $file_name"
     echo "2. Katalog: $directory"
     echo "3. Opcje wyszukiwania: $options"
