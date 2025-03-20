@@ -13,50 +13,30 @@ while true; do
     echo "4. Zawartość pliku: $content"
     echo "5. Szukaj"
     echo "6. Koniec"
-    echo -n "Wybierz opcję: "
-    read choice
-    
+    read -p "Wybierz opcję: " choice
+
     case $choice in
-        1)
-            echo -n "Podaj nazwę pliku: "
-            read file_name
-            ;;
-        2)
-            echo -n "Podaj katalog (domyślnie /): "
-            read directory
-            [ -z "$directory" ] && directory="/"
-            ;;
-        3)
-            echo -n "Podaj opcje wyszukiwania (np. -size +1M, -mtime -7): "
-            read options
-            ;;
-        4)
-            echo -n "Podaj frazę do wyszukania w pliku: "
-            read content
-            ;;
-        5)
-            echo "Wyszukiwanie..."
-            find_command="find \"$directory\" -type f"
-            [ -n "$file_name" ] && find_command+=" -name \"*$file_name*\""
-            [ -n "$options" ] && find_command+=" $options"
+        1) read -p "Podaj nazwę pliku: " file_name ;;
+        2) read -p "Podaj katalog: " directory ;;
+        3) read -p "Podaj opcje wyszukiwania (np. -size +1M): " options ;;
+        4) read -p "Podaj frazę do wyszukania w pliku: " content ;;
+        5) 
+            echo "Wyszukiwanie"
+            find_cmd="find \"$directory\" -type f"
+            [ -n "$file_name" ] && find_cmd+=" -name \"*$file_name*\""
+            [ -n "$options" ] && find_cmd+=" $options"
             
-            eval $find_command > results.txt
-            
+            result=$(eval $find_cmd 2>/dev/null)
+
             if [ -n "$content" ]; then
-                grep -l "$content" $(cat results.txt) 2>/dev/null > results_filtered.txt
-                cat results_filtered.txt
+                echo "$result" | xargs grep -l "$content" 2>/dev/null
             else
-                cat results.txt
+                echo "$result"
             fi
-            echo "Naciśnij Enter, aby kontynuować..."
-            read
+
+            read -p "Naciśnij Enter, aby kontynuować"
             ;;
-        6)
-            echo "Koniec programu."
-            exit 0
-            ;;
-        *)
-            echo "Nieprawidłowy wybór!"
-            ;;
+        6) exit 0 ;;
+        *) echo "Nieprawidłowy wybór";;
     esac
 done
