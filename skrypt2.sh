@@ -18,8 +18,8 @@ while true; do
     case $choice in
         1) read -p "Podaj nazwę pliku: " file_name ;;
         2) read -p "Podaj katalog: " directory ;;
-        3) read -p "Podaj opcje wyszukiwania (np. -size +1M): " options ;;
-        4) read -p "Podaj frazę do wyszukania w pliku: " content ;;
+        3) read -p "Podaj opcje wyszukiwania: " options ;;
+        4) read -p "Podaj zawartość do wyszukania w pliku: " content ;;
         5) 
             echo "Wyszukiwanie"
             find_cmd="find \"$directory\" -type f"
