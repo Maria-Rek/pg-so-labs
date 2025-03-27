@@ -1,2 +1,3 @@
-# pg-so
-Systemy operacyjne
+# Systemy Operacyjne
+Operating Systems Labs
+SO - Politechnika Gdańska, Informatyka
