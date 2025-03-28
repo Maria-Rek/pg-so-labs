@@ -12,23 +12,20 @@ echo -e "\nCzęść 2"
 
 curl -s "https://raw.githubusercontent.com/bnokoro/Data-Science/refs/heads/master/countries%20of%20the%20world.csv" | \
 awk -F',' 'NR > 1 {
-    # Wyciągnij region i usuń spacje
     region = $2
-    gsub(/^ +| +$/, "", region)
-
-    # Jeśli region zawiera EUROPE (np. EASTERN EUROPE, WESTERN EUROPE itd.)
+    gsub(/^[ \t]+|[ \t]+$/, "", region)
     if (region ~ /EUROPE/) {
-        gsub(/^ +| +$/, "", $1)  # Country
-        gsub(/^ +| +$/, "", $3)  # Population
-        gsub(/^ +| +$/, "", $4)  # Area
+        country = $1
+        population = $3
+        area = $4
 
-        # usuń przecinki dziesiętne i zamień na kropki (jak trzeba)
-        pop = $3; gsub(",", ".", pop)
-        area = $4; gsub(",", ".", area)
+        gsub(/^[ \t]+|[ \t]+$/, "", country)
+        gsub(/^[ \t]+|[ \t]+$/, "", population)
+        gsub(/^[ \t]+|[ \t]+$/, "", area)
 
-        # tylko jeśli to są liczby
-        if (pop ~ /^[0-9.]+$/ && area ~ /^[0-9.]+$/) {
-            printf "  { \"country\": \"%s\", \"population\": %d, \"area\": %d },\n", $1, pop, area
+        # drukujemy tylko jeśli population i area to liczby całkowite
+        if (population ~ /^[0-9]+$/ && area ~ /^[0-9]+$/) {
+            printf "  { \"country\": \"%s\", \"population\": %s, \"area\": %s },\n", country, population, area
         }
     }
 }' | sed '$s/,$//' | awk 'BEGIN { print "[" } { print } END { print "]" }'
