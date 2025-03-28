@@ -1,13 +1,10 @@
 #!/bin/bash
 
-# Ścieżka do słownika
 DICT="/usr/share/dict/words"
 
-# Wczytaj dane od użytkownika
 echo "Podaj tekst do sprawdzenia:"
 read -r INPUT
 
-# Przetwarzaj słowa i koloruj błędne na czerwono
 for WORD in $INPUT; do
     CLEANED=$(echo "$WORD" | tr -d '[:punct:]')
 
@@ -18,7 +15,4 @@ for WORD in $INPUT; do
     fi
 done
 
-# Nowa linia na koniec
 echo
-
-#czat, koloruje błędne słowa w pełnym tekście
