@@ -23,7 +23,6 @@ awk -F',' 'NR > 1 {
         gsub(/^[ \t]+|[ \t]+$/, "", population)
         gsub(/^[ \t]+|[ \t]+$/, "", area)
 
-        # drukujemy tylko jeśli population i area to liczby całkowite
         if (population ~ /^[0-9]+$/ && area ~ /^[0-9]+$/) {
             printf "  { \"country\": \"%s\", \"population\": %s, \"area\": %s },\n", country, population, area
         }
