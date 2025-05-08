@@ -1,0 +1,60 @@
+.TH MENHASEL 1 "08 maja 2025" "Wersja 0.9" "Manual użytkownika"
+
+.SH NAZWA
+menhasel \- graficzny menedżer i generator haseł z obsługą szyfrowania
+
+.SH SKŁADNIA
+.B ./skrypt.sh
+[\fB-gasvoz\fR]
+
+.SH OPIS
+\fBmenhasel\fR to prosty graficzny menedżer haseł napisany w Bashu z użyciem Zenity i OpenSSL.
+Umożliwia tworzenie silnych haseł, ich przechowywanie w pliku CSV oraz szyfrowanie i odszyfrowywanie danych.
+
+.SH OPCJE
+.TP
+\fB\-g\fR
+Generuj nowe hasło.
+
+.TP
+\fB\-a\fR
+Dodaj wpis ręcznie.
+
+.TP
+\fB\-s\fR
+Przeglądaj zapisane hasła i kopiuj wybrane do schowka.
+
+.TP
+\fB\-z\fR
+Zaszyfruj plik haseł do postaci zaszyfrowanej.
+
+.TP
+\fB\-o\fR
+Odszyfruj dane z pliku i przywróć plik haseł.
+
+.TP
+\fB\-v\fR
+Wyświetl wersję programu.
+
+.TP
+\fB\-h\fR
+Pokaż pomoc.
+
+.SH PLIKI
+.TP
+\fBhasla.csv\fR
+Główny plik z zapisanymi hasłami w formacie CSV.
+
+.TP
+\fBhasla.enc\fR
+Zaszyfrowany plik z danymi.
+
+.TP
+\fBconfig.ini\fR
+Plik konfiguracyjny zawierający domyślną długość generowanego hasła.
+
+.SH AUTOR
+Maria Rek <s203174@student.pg.edu.pl>
+
+.SH LICENCJA
+GPL v3 — Zobacz /usr/share/common-licenses/GPL
