@@ -1,0 +1,140 @@
+#!/bin/bash
+
+PLIK_HASLA="hasla.csv"
+PLIK_TYM=$(mktemp)
+PLIK_SZYFROWANY="hasla.enc"
+PLIK_KONFIG="config.ini"
+
+if [ ! -f "$PLIK_KONFIG" ]; then
+  echo "DLUGOSC_HASLA=16" > "$PLIK_KONFIG"
+fi
+
+pokaz_pomoc() {
+  zenity --info --title="Pomoc" --width=400 --height=200 --text="Dostępne opcje:\n
+  -g  Generuj hasło\n
+  -a  Dodaj ręcznie\n
+  -s  Przeglądaj hasła\n
+  -z  Zapisz do zaszyfrowanego pliku\n
+  -o  Odczytaj z zaszyfrowanego pliku\n
+  -h  Pomoc\n
+  -v  Wersja"
+  exit 0
+}
+
+pokaz_wersje() {
+  zenity --info --title="Wersja" --width=300 --height=100 --text="Menedżer haseł\nAutor: Maria Rek\nWersja: 1.0"
+  exit 0
+}
+
+generuj_haslo() {
+  SERWIS=$(zenity --entry --title="Nowe hasło" --width=400 --height=100 --text="Podaj nazwę serwisu:") || exit 1
+  LOGIN=$(zenity --entry --title="Nowe hasło" --width=400 --height=100 --text="Podaj login:") || exit 1
+
+  DOMYSLNA_DLUGOSC=$(grep "^DLUGOSC_HASLA=" "$PLIK_KONFIG" | cut -d= -f2)
+  [ -z "$DOMYSLNA_DLUGOSC" ] && DOMYSLNA_DLUGOSC=16
+
+  DLUGOSC=$(zenity --scale --title="Długość hasła" --width=400 --height=150 \
+    --text="Wybierz długość hasła:" \
+    --min-value=8 --max-value=32 --value="$DOMYSLNA_DLUGOSC") || exit 1
+
+  HASLO=$(openssl rand -base64 48 | cut -c1-"$DLUGOSC")
+
+  if [ ! -f "$PLIK_HASLA" ]; then
+    echo "Serwis;Login;Haslo" > "$PLIK_HASLA"
+  fi
+  echo "$SERWIS;$LOGIN;$HASLO" >> "$PLIK_HASLA"
+
+  zenity --info --title="Sukces" --width=400 --height=120 --text="Wygenerowano i zapisano hasło:\n$HASLO"
+}
+
+dodaj_recznie() {
+  SERWIS=$(zenity --entry --title="Dodaj ręcznie" --width=400 --height=100 --text="Podaj nazwę serwisu:") || exit 1
+  LOGIN=$(zenity --entry --title="Dodaj ręcznie" --width=400 --height=100 --text="Podaj login:") || exit 1
+  HASLO=$(zenity --entry --title="Dodaj ręcznie" --width=400 --height=100 --text="Podaj hasło:") || exit 1
+
+  if [ ! -f "$PLIK_HASLA" ]; then
+    echo "Serwis;Login;Haslo" > "$PLIK_HASLA"
+  fi
+  echo "$SERWIS;$LOGIN;$HASLO" >> "$PLIK_HASLA"
+
+  zenity --info --title="Zapisano" --width=400 --height=100 --text="Dodano nowe hasło do bazy."
+}
+
+pokaz_hasla() {
+  if [ ! -f "$PLIK_HASLA" ] || [ ! -s "$PLIK_HASLA" ]; then
+    zenity --error --width=400 --height=100 --text="Brak zapisanych haseł do wyświetlenia."
+    exit 1
+  fi
+
+  MAPA=()
+  while IFS=';' read -r serwis login haslo; do
+    MAPA+=("$serwis" "$login" "$haslo")
+  done < <(tail -n +2 "$PLIK_HASLA")
+
+  if [ ${#MAPA[@]} -eq 0 ]; then
+    zenity --error --width=400 --height=100 --text="Brak danych do wyświetlenia."
+    exit 1
+  fi
+
+  WYBRANE=$(zenity --list \
+    --title="Zapisane hasła" \
+    --column="Serwis" --column="Login" --column="Hasło" \
+    --print-column=ALL \
+    --separator=";" \
+    --width=600 --height=400 \
+    "${MAPA[@]}")
+
+  [ -z "$WYBRANE" ] && exit 0
+
+  IFS=";" read -r SERWIS LOGIN HASLO <<< "$WYBRANE"
+
+  zenity --question --width=500 --height=200 --text="Co chcesz skopiować do schowka?\n\nSerwis: $SERWIS\nLogin: $LOGIN\nHasło: $HASLO"
+  if [ $? -eq 0 ]; then
+    WYBOR=$(zenity --list --radiolist --title="Kopiuj" --width=300 --height=150 --column="" --column="Pole" \
+      TRUE "Login" FALSE "Hasło")
+    if [ "$WYBOR" = "Login" ]; then
+      echo -n "$LOGIN" | xclip -selection clipboard
+    elif [ "$WYBOR" = "Hasło" ]; then
+      echo -n "$HASLO" | xclip -selection clipboard
+    fi
+    zenity --info --title="Skopiowano" --width=300 --height=100 --text="Skopiowano do schowka: $WYBOR"
+  fi
+}
+
+zapisz_szyfrowane() {
+  if [ ! -f "$PLIK_HASLA" ]; then
+    zenity --error --width=400 --height=100 --text="Brak pliku z hasłami do zaszyfrowania."
+    exit 1
+  fi
+
+  KLUCZ=$(zenity --password --title="Podaj hasło szyfrujące" --width=400 --height=100) || exit 1
+
+  openssl enc -aes-256-cbc -salt -in "$PLIK_HASLA" -out "$PLIK_SZYFROWANY" -k "$KLUCZ"
+
+  zenity --question --width=400 --height=120 --text="Zaszyfrowano dane do $PLIK_SZYFROWANY.\nCzy chcesz usunąć jawny plik $PLIK_HASLA?"
+
+  if [ $? -eq 0 ]; then
+    rm "$PLIK_HASLA"
+    zenity --info --width=300 --height=100 --text="Plik $PLIK_HASLA został usunięty."
+  else
+    zenity --info --width=300 --height=100 --text="Plik $PLIK_HASLA został zachowany."
+  fi
+}
+
+odczytaj_szyfrowane() {
+  if [ ! -f "$PLIK_SZYFROWANY" ]; then
+    zenity --error --width=400 --height=100 --text="Brak pliku zaszyfrowanego."
+    exit 1
+  fi
+
+  KLUCZ=$(zenity --password --title="Podaj hasło odszyfrowujące" --width=400 --height=100) || exit 1
+
+  openssl enc -d -aes-256-cbc -in "$PLIK_SZYFROWANY" -k "$KLUCZ" > "$PLIK_TYM"
+
+  if ! grep -q "^Serwis;Login;Haslo$" "$PLIK_TYM"; then
+    sed -i '1i Serwis;Login;Haslo' "$PLIK_TYM"
+  fi
+
+  mv "$PLIK_TYM" "$PLIK_HASLA"
+  zenity --info --title="Sukces" --width=400 --height=100 --text="Odszyfrowano dane do $PLIK_HASLA"
+}
