@@ -1,10 +1,10 @@
-    WARIANT 1:
+    WARIANT 1 - STCF:
 git clone https://git.pg.edu.pl/p18685/so-scheduler.git
 cd so-scheduler
 
 Stwórz plik scheduler/stcf.py
 
- W pliku main.py (w katalogu so-scheduler-main/):
+ W pliku main.py (w katalogu so-scheduler/):
 import scheduler.stcf as stcf
  oraz w słowniku schedulers:
 'stcf': stcf.schedule
@@ -12,13 +12,24 @@ import scheduler.stcf as stcf
  Uruchomienie algorytmu STCF:
 python3 main.py jobs.txt stcf
 
-    WARIANT 2:
+    WARIANT 2 - STRIDE:
 Stwórz plik scheduler/stride.py
 
- W pliku main.py (w katalogu so-scheduler-main/):
+ W pliku main.py (w katalogu so-scheduler/):
 import scheduler.stride as stride
  oraz w słowniku schedulers:
 'stride': stride.schedule
 
  Uruchomienie algorytmu STRIDE:
 python3 main.py jobs.txt stride
+
+        WARIANT 2 - MLFQ:
+Stwórz plik scheduler/mlfq.py
+
+ W pliku main.py (w katalogu so-scheduler/):
+import scheduler.mlfq as mlfq
+ oraz w słowniku schedulers:
+'mlfq': mlfq.schedule
+
+ Uruchomienie algorytmu STRIDE:
+python3 main.py jobs.txt mlfq
