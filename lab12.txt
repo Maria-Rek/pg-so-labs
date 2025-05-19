@@ -4,17 +4,21 @@ cd so-scheduler
 
 Stwórz plik scheduler/stcf.py
 
-W pliku main.py (w katalogu so-scheduler-main/):
- import scheduler.stcf as stcf
-oraz w słowniku schedulers:
- 'stcf': stcf.schedule
-
-Stwórz plik jobs.txt (w katalogu so-scheduler-main/) z treścią:
-job_name,priority,burst,start_time,deadline
-A,1,6,0,15
-B,2,2,1,15
-C,1,8,2,15
-D,3,3,3,15
+ W pliku main.py (w katalogu so-scheduler-main/):
+import scheduler.stcf as stcf
+ oraz w słowniku schedulers:
+'stcf': stcf.schedule
 
  Uruchomienie algorytmu STCF:
 python3 main.py jobs.txt stcf
+
+```WARIANT 2:```
+Stwórz plik scheduler/stride.py
+
+ W pliku main.py (w katalogu so-scheduler-main/):
+import scheduler.stride as stride
+ oraz w słowniku schedulers:
+'stride': stride.schedule
+
+ Uruchomienie algorytmu STRIDE:
+python3 main.py jobs.txt stride
