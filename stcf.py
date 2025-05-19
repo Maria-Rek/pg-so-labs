@@ -1,21 +1,45 @@
-# algorithms/stcf.py
+from collections import deque
+from job import Job
 
-from scheduler import Scheduler
+def schedule(jobs):
+    time = 0
+    completed_jobs = []
+    job_queue = []
+    jobs = sorted(jobs, key=lambda x: x.arrival_time)
+    remaining_jobs = jobs[:]
+    current_job = None
 
-class STCFScheduler(Scheduler):
-    def __init__(self):
-        self.kolejka = []
-        self.biezacy = None
+    while remaining_jobs or job_queue or current_job:
+        while remaining_jobs and remaining_jobs[0].arrival_time <= time:
+            job = remaining_jobs.pop(0)
+            job.remaining_time = job.burst_time
+            job_queue.append(job)
 
-    def add_process(self, process):
-        self.kolejka.append(process)
+        if job_queue or current_job:
+            if current_job:
+                job_queue.append(current_job)
+                current_job = None
 
-    def get_next_process(self, current_process, current_time):
-        if current_process and current_process.remaining_time > 0:
-            self.kolejka.append(current_process)
+            job_queue.sort(key=lambda x: x.remaining_time)
+            current_job = job_queue.pop(0)
 
-        if not self.kolejka:
-            return None
+            if current_job.start_time is None:
+                current_job.start_time = time
+                current_job.response_time = time - current_job.arrival_time
 
-        self.kolejka.sort(key=lambda p: p.remaining_time)
-        return self.kolejka.pop(0)
+            current_job.remaining_time -= 1
+
+            if current_job.remaining_time == 0:
+                current_job.completion_time = time + 1
+                current_job.turnaround_time = current_job.completion_time - current_job.arrival_time
+                current_job.waiting_time = current_job.turnaround_time - current_job.burst_time
+                completed_jobs.append({
+                    "job_name": current_job.name,
+                    "waiting_time": current_job.waiting_time,
+                    "turnaround_time": current_job.turnaround_time,
+                    "response_time": current_job.response_time
+                })
+                current_job = None
+        time += 1
+
+    return completed_jobs
