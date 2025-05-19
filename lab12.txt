@@ -1,0 +1,36 @@
+```WARIANT 1:```
+git clone https://git.pg.edu.pl/p18685/so-scheduler.git
+cd so-scheduler
+
+cd algorithms
+touch stcf.py
+
+Ścieżka: so-scheduler/algorithms/stcf.py
+
+ so-scheduler/scheduler.py
+Znajdź funkcję: def get_scheduler(name):
+
+I dopisz do niej ten fragment (na końcu innych elif, ale przed raise ValueError):
+    elif name == "stcf":
+        from algorithms.stcf import STCFScheduler
+        return STCFScheduler()
+
+
+Całość ma wyglądać mniej więcej tak:
+def get_scheduler(name):
+    if name == "fcfs":
+        from algorithms.fcfs import FCFSScheduler
+        return FCFSScheduler()
+    elif name == "sjf":
+        from algorithms.sjf import SJFScheduler
+        return SJFScheduler()
+    elif name == "stcf":
+        from algorithms.stcf import STCFScheduler
+        return STCFScheduler()
+    else:
+        raise ValueError("Nieznany algorytm: " + name)
+
+Wróć do katalogu głównego: cd ..
+Kompilacja: python3 simulator.py stcf examples/example1.json
+
+```WARIANT 2:```
