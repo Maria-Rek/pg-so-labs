@@ -9,10 +9,17 @@ def schedule(jobs):
     remaining_jobs = jobs[:]
     current_job = None
 
+    for job in jobs:
+        job.remaining_time = job.burst_time
+        job.start_time = None
+        job.response_time = None
+        job.completion_time = None
+        job.turnaround_time = None
+        job.waiting_time = None
+
     while remaining_jobs or job_queue or current_job:
         while remaining_jobs and remaining_jobs[0].arrival_time <= time:
             job = remaining_jobs.pop(0)
-            job.remaining_time = job.burst_time
             job_queue.append(job)
 
         if job_queue or current_job:
@@ -40,6 +47,7 @@ def schedule(jobs):
                     "response_time": current_job.response_time
                 })
                 current_job = None
+
         time += 1
 
     return completed_jobs
