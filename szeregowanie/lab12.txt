@@ -1,0 +1,24 @@
+    WARIANT 1:
+git clone https://git.pg.edu.pl/p18685/so-scheduler.git
+cd so-scheduler
+
+Stwórz plik scheduler/stcf.py
+
+ W pliku main.py (w katalogu so-scheduler-main/):
+import scheduler.stcf as stcf
+ oraz w słowniku schedulers:
+'stcf': stcf.schedule
+
+ Uruchomienie algorytmu STCF:
+python3 main.py jobs.txt stcf
+
+    WARIANT 2:
+Stwórz plik scheduler/stride.py
+
+ W pliku main.py (w katalogu so-scheduler-main/):
+import scheduler.stride as stride
+ oraz w słowniku schedulers:
+'stride': stride.schedule
+
+ Uruchomienie algorytmu STRIDE:
+python3 main.py jobs.txt stride
