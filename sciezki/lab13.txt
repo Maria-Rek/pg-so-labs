@@ -1,0 +1,5 @@
+gcc -o my_pwd my_pwd.c
+./my_pwd
+
+kompilacja w innym miejscu:
+~/Pulpit/my_pwd
