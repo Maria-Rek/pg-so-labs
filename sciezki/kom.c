@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -8,7 +7,7 @@
 
 #define MAX_PATH 1024
 
-// Dodaje segment katalogu na początek ścieżki
+// Dodaje nazwę katalogu na początek ścieżki
 void prepend(char *path, const char *name) {
     char temp[MAX_PATH];
     snprintf(temp, sizeof(temp), "/%s%s", name, path);
@@ -20,13 +19,6 @@ int main() {
     char path[MAX_PATH] = "";
     char *current = ".";
     char *parent = "..";
-
-    // Alokujemy pamięć na nazwę katalogu
-    char cwd[MAX_PATH];
-    if (!getcwd(cwd, sizeof(cwd))) {
-        perror("getcwd");
-        return 1;
-    }
 
     while (1) {
         // Dane o katalogu bieżącym
@@ -41,19 +33,19 @@ int main() {
             return 1;
         }
 
-        // Jeśli jesteśmy w root (czyli ten sam inode i device)
+        // Jeśli jesteśmy w korzeniu systemu plików (np. /)
         if (current_stat.st_ino == parent_stat.st_ino &&
             current_stat.st_dev == parent_stat.st_dev) {
             break;
         }
 
-        // Przechodzimy do katalogu nadrzędnego
+        // Przejście do katalogu nadrzędnego
         if (chdir(parent) == -1) {
             perror("chdir");
             return 1;
         }
 
-        // Szukamy naszej nazwy w katalogu nadrzędnym
+        // Szukamy nazwy bieżącego katalogu w rodzicu
         DIR *dir = opendir(".");
         if (!dir) {
             perror("opendir");
@@ -76,7 +68,7 @@ int main() {
         closedir(dir);
     }
 
-    // Jeśli ścieżka jest pusta, to jesteśmy w /
+    // Jeśli path jest pusty — jesteśmy w /
     if (strlen(path) == 0)
         strcpy(path, "/");
 
