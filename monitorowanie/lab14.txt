@@ -1,0 +1,8 @@
+Kompilacja i uruchamianie:
+gcc energia.c -o energia
+sudo ./energia
+
+Trzeba upewnić się, że: 
+cat /proc/sys/kernel/perf_event_paranoid
+zwaraca 0
+
