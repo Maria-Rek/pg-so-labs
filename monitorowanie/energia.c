@@ -100,12 +100,13 @@ int main() {
     ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
 
     printf("Naciśnij dowolny klawisz, aby zakończyć.\n");
+    fflush(stdout);
 
     while (1) {
         sleep(1);
         read(fd, &curr_energy, sizeof(uint64_t));
         double joules = (curr_energy - prev_energy) * scale;
-        printf("Zużyta moc: %.2f W\n", joules); 
+        printf("Zużyta moc: %.2f W\n", joules);
         prev_energy = curr_energy;
 
         if (getchar() != EOF)
