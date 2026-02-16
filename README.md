@@ -11,4 +11,4 @@
 C, Python, Bash, Linux
 
 ---
-Labs for the *Operating Systems* course (2024/2025) at Gdańsk University of Technology.
+Labs for the *Operating Systems* course (2024/2025) at Gdańsk University of Technology. 
